@@ -1,0 +1,47 @@
+/* styles.css */
+
+/*
+ * Rule for headers and table content
+ */
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6,
+.reveal th,
+.reveal td {
+  font-family: "Georgia", serif;
+}
+
+/* * CORRECTED RULE FOR FIGURE CAPTIONS
+ * This targets the <figcaption> element that Quarto generates.
+ */
+.reveal figcaption {
+  font-size: 0.5em !important; /* Adjust size as needed. 0.6em is quite small. */
+  text-align: center;
+}
+
+/* Rule for figure images */
+.reveal .figure img {
+  max-height: 65vh; /* Image can't be taller than 65% of the slide height */
+  width: auto;      /* Ensures width scales proportionally */
+}
+
+/* When a slide with data-state containing "white-text" is active... */
+.reveal[data-state*="white-text"] {
+  color: white !important; /* Make default paragraph/list text white */
+}
+
+/* ...also target the headers on that slide... */
+.reveal[data-state*="white-text"] h1,
+.reveal[data-state*="white-text"] h2,
+.reveal[data-state*="white-text"] h3 {
+  color: white !important;
+}
+
+/* ...and also target the presentation footer. */
+.reveal[data-state*="white-text"] .footer {
+  color: white !important;
+}
+

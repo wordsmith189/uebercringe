@@ -1,0 +1,674 @@
+---
+title: "Co-constructing CRINGE"
+subtitle: |
+  Ambivalent Affect Elicitation and Vernacular Styles</br>in 
+  Dialectological Fieldwork
+author:
+  - name: "Lars Hinrichs"
+    affiliation: "The University of Texas at Austin"
+    orcid: "0000-0003-3679-1927"
+date: 2025-07-08
+date-format: "MMMM YYYY"
+format: 
+  revealjs:
+   theme: white
+   center: true
+   chalkboard: true
+   chalk-width: 16
+   slide-numbers: c/t
+   show-slide-number: all
+   logo: "img/texas word bw.png"
+   transition: fade
+   css: styles.css
+   footer: "Lars Hinrichs | UEBER CRINGE | Heidelberg 2025"
+   title-slide-attributes:
+     data-background-image: img/cowboys.png
+     data-background-size: cover
+resources:
+  - ./audio/
+execute:
+  echo: false
+---
+
+
+```{r setup-packages}
+library(pacman)
+p_load(rio, tidyverse, janitor)
+```
+
+```{r get-main-data, eval=FALSE}
+df <- import("H2TX_2024_Language_discourse_analysis.xlsx") |> 
+  clean_names() |> 
+  mutate(file_name = tolower(file_name),
+         file_name = tools::file_path_sans_ext(file_name))
+```
+
+```{r get-demo-info, eval=FALSE}
+df_demo <- import('demographic_info.xlsx') |> 
+  clean_names() |> 
+  mutate(transcript_name = tolower(transcript_name),
+         file_name = transcript_name,
+         transcript_name = NULL)
+
+# attach to df
+df <- df |> 
+  left_join(df_demo) |> 
+  mutate(
+    number_of_audio_files = NULL,
+    interview_date = NULL,
+    gender = what_is_your_gender,
+    what_is_your_gender = NULL,
+    race = what_is_your_race,
+    what_is_your_race = NULL,
+    if_race_other_please_specify = NULL,
+    age = how_old_are_you,
+    how_old_are_you = NULL,
+    education = what_is_your_highest_level_of_education,
+    what_is_your_highest_level_of_education = NULL,
+    occupation = what_do_you_do_for_work,
+    what_do_you_do_for_work = NULL,
+    place = in_which_city_town_do_you_live,
+    place = str_to_title(place),
+    place = str_remove_all(place, ", Texas|, Tx|, TX"),
+    in_which_city_town_do_you_live = NULL,
+    multiling = do_you_speak_any_languages_other_than_english,
+    do_you_speak_any_languages_other_than_english = NULL
+  ) |> 
+  select(file = file_name,
+         timecode_of_question:political_positioning,
+         gender, race, hispanic = are_you_hispanic_or_latino,
+         age:multiling,
+         how_old_were_you_when_you_moved_here:in_which_city_town_do_you_work,
+         everything()
+         )
+
+```
+
+```{r get-counties, eval=FALSE}
+df_counties <- import('/Users/LH9896/Library/CloudStorage/Box-Box/_TELL/Projects/TELL & H2TX/demographic data/data/places_counties.xlsx') |> 
+  mutate(place = str_to_title(place)) 
+
+df <- df |> 
+  left_join(df_counties)
+```
+
+```{r formatting, eval=FALSE}
+df <- df |> 
+  
+    rename(
+      cringe_question_t = timecode_of_question,
+      tell_incl = qualifies_for_tell_analysis,
+      lineage_origin = thinking_back_on_your_family_lineage_who_among_your_ancestors_immigrated_to_texas_and_where_did_they_come_from,
+      community_lgs = outside_of_your_family_what_languages_are_spoken_in_your_community_in_addition_to_english,
+      res_until_13 = where_did_you_live_before_the_age_of_13,
+      res_since_13 = since_the_age_of_13_in_which_cities_towns_have_you_lived,
+      age_arrived = how_old_were_you_when_you_moved_here,
+      other_lg_age = at_what_age_did_you_start_learning_the_other_language_s,
+      other_lg_iloc = with_whom_do_you_speak_this_language,
+      other_lg_lit = have_you_learned_how_to_read_and_write_in_your_language,
+      other_lg_lit_wish = if_no_do_you_wish_you_could_read_and_write_in_your_language,
+      other_lg_edu = did_you_receive_any_education_about_your_language_at_school,
+      place_work = in_which_city_town_do_you_work,
+      all_pop_gt_5000 = all_pop_greater_than_5000,
+      
+    ) |> 
+  
+  mutate(
+    gender = tolower(gender),
+    race = tolower(race),
+    hispanic = tolower(hispanic),
+    age = as.numeric(age),
+    response = tolower(response),
+    explanation_type = tolower(explanation_type),
+    if_yes_region = NULL,
+    education = str_to_title(education),
+    multiling = tolower(multiling),
+    tell_incl = tolower(tell_incl),
+    region = str_remove_all(region, " Texas")
+    
+  ) 
+
+dft <- df |> select(file, cringe_question_t)
+
+p_load(hms)
+
+dft <- dft |> 
+  mutate(
+    # Remove init. apostrophe and handle string "NA"s
+    cringe_question_t = cringe_question_t |>
+      na_if("NA") |>
+      str_remove("^'")
+  ) |>
+  # Use separate() to split time string into components
+  # 3 columns (c1, c2, c3)
+  separate(
+    cringe_question_t,
+    into = c("c1", "c2", "c3"),
+    sep = ":",
+    fill = "right", # Pad with NAs on the right if there are fewer than 3 parts
+    remove = FALSE, # Keep the cleaned_time column for reference
+    convert = TRUE  # Convert new columns to numeric where possible
+  ) |>
+  # Now, calculate total_seconds based on which components exist.
+  mutate(
+    cringe_question_t_s = case_when(
+      # If c3 is not NA, we have hh:mm:ss format (c1=h, c2=m, c3=s)
+      !is.na(c3) ~ (c1 * 3600) + (c2 * 60) + c3,
+
+      # If c3 is NA, we have mm:ss format (c1=m, c2=s)
+      is.na(c3) ~ (c1 * 60) + c2,
+
+      # This handles any remaining cases, such as if cleaned_time was NA
+      TRUE ~ NA_real_
+    ),
+    cringe_question_t = as_hms(cringe_question_t_s)
+  ) |>
+  # Select final columns for output
+  select(file, cringe_question_t, cringe_question_t_s)
+
+
+df <- df |>
+  select(-cringe_question_t) |> 
+  left_join(dft) |> 
+  select(file, cringe_question_t, cringe_question_t_s, everything())
+
+```
+
+```{r get-rucc, eval=FALSE}
+df_rucc <- import('/Users/LH9896/Library/CloudStorage/Box-Box/_TELL/Projects/TELL & H2TX/demographic data/rural_urban_continuum_codes/Ruralurbancontinuumcodes2023.xlsx') |> 
+  clean_names() |> 
+  filter(state == "TX") |> 
+  select(county = county_name, rucc = rucc_2023) |> 
+  mutate(county = str_remove_all(county, " County"))
+
+df <- df |> 
+  left_join(df_rucc) |> 
+  select(1:20, 22:36, place, everything()) |> 
+  select(1:21, 36:44, everything())
+
+df_pol <- import("data_political.xlsx")
+
+df <- df |> 
+  left_join(df_pol) |> 
+  select(1:14, political_leaning, everything())
+
+df <- df |> 
+  mutate(
+    race = if_else(startsWith(race, "white,american"), "american indian", race),
+    race = str_replace(race, "black or african american", "african american"),
+    race = str_replace(race, "other (please specify)", "hispanic"),
+    race = ifelse((hispanic == "yes"), "hispanic", race)
+  )
+
+df <- df |> 
+  mutate(race = ifelse(is.na(race), "white", race))
+
+df |> export("data_merged.xlsx")
+
+```
+
+```{r load-data, include=FALSE}
+df <- import("data_merged.xlsx")
+```
+
+```{r show-data, eval=FALSE}
+
+df |> tibble()
+```
+
+
+## Overview {background-image="img/cowboys.png"} 
+
+::: {.absolute-image}
+![](img/interview.png)
+:::
+
+
+::: {.notes}
+- recent dialectological project
+- unusual opportunity of collecting interviews in over 70 different communities and municipalities across Texas through student fieldworkers
+- without me present
+- forced to consider Obs. Par.
+- include questions targeting CRINGE as a way to achieve this
+:::
+
+
+## Outline
+
+
+## 
+
+**DelRio_DC_07022024**
+
+::: {style="width: 90%; margin: auto;"}
+
+```{r}
+p_load(gt)
+
+df_clip_1 <-  import('/Users/LH9896/Library/CloudStorage/Box-Box/_TELL/Projects/TELL & H2TX/H2TX teaching/interview session 06-2025/Language_DelRio_DC_07022024_1.xlsx') |> 
+  filter(!is.na(Speaker)) 
+
+df_clip_1 |> 
+  gt() |> 
+  tab_style(
+    style = cell_text(v_align = "top",
+                      size = px(20) ),
+    locations = cells_body(columns = everything())
+  ) |> 
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) 
+
+```
+:::
+
+<audio controls>
+  <source src="audio/Language_DelRio_DC_07022024_1.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+
+## CRINGE
+
+
+
+## CRINGE in interaction
+
+
+
+## CRINGE as a phatic device
+
+
+
+## Phaticity and the sociolinguistic interview
+
+- Interview as key data elicitation method in dialectology and sociolinguistics
+- Observer's paradox (Labov 1972)
+- DoD question (ibid.)
+
+## Critiques of the DoD question
+
+- ...
+- ...
+- Sneller & Barnard suggest drawing on pop-cultural context for chatty questions
+
+## CRINGE talk phaticity
+
+Evidence that CT can engender phatic communion:
+
+[literature]
+
+## Phatic communion, CA, and DA
+
+Some definitions
+
+## Research questions
+
+1. Can a question aimed at eliciting CT effectively replace the DoD question in sociolinguistic interviews? 
+1. If not, why? 
+
+# Data and Methods
+
+## Home to Texas (H2TX)
+
+##
+
+(video)
+
+## H2TX 2024 interviews
+
+- map
+- rural/urban
+- gender
+- ethnicity
+
+## Interview protocol
+
+3-part structure
+
+introduce Place Talk (PT) <br>[CLIP with characteristic elicitation, e.g. Midlothian]
+
+Key question: story about someone else... CT elicitation <br>[CLIP of somewhere that it worked]
+
+## Method
+
+- DA
+- Content analysis
+
+right column:
+
+1. Did participant answer "yes" or "no"?
+1. If "yes", did they offer a story? 
+1. If "no", was any context provided? 
+1. Can we muster any explanation for the non-success cases?
+
+## 
+
+:::: {.container .incremental layout-ncol="2"}
+:::{.fragment}
+:::{.figure}
+
+```{r}
+#| fig-cap: "Overall Outcome Frequency"
+#| out-width: "95%"
+#| fig-align: "center"
+
+p_load(RColorBrewer, scales)
+# Generate all colors from "RdBu" palette
+all_rdbu_colors <- brewer.pal(9, "Set2")
+# Select the 3rd and 10th colors
+my_custom_colors1 <- all_rdbu_colors[c(2,1)]
+
+dat <- df |> 
+  filter(!response == "na") |> 
+  count(response)
+
+p1 <- ggplot(dat, aes(response, n,
+             fill = response)) +
+  geom_col(width = .5,
+           color = "black",
+           show.legend = F) +
+  
+  labs(y = NULL, x = NULL) +
+
+  geom_text(
+    aes(label = n), 
+    hjust = -0.2,  
+    size = 10,  # font size. Note: unit different (mm)
+    family = "Times New Roman"
+  ) +
+  # make sure plot area is wide enough for new text
+  scale_y_continuous(expand = expansion(mult = c(0, .15))) +
+  coord_flip() +
+  scale_fill_manual(values = my_custom_colors1) +
+  theme_classic(base_size = 25, base_family = "Times New Roman") +
+  theme(axis.text.y = element_text(size = 30),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank())
+
+p1
+```
+
+:::
+:::
+
+:::{.fragment}
+:::{.figure}
+
+```{r}
+#| fig-cap: "Response by Gender"
+#| out-width: "95%"
+#| fig-align: "center"
+
+df_summary <- df |>
+  filter(!response == "na") |>
+  count(gender, response) |> # Count combinations of gender and response
+  group_by(gender) |>       # Calculate percentages within each gender group
+  mutate(pct = n / sum(n)) |>
+  ungroup() |> 
+  mutate(response = factor(response, levels = c("no", "yes")))
+
+# 2. Now, create the plot using this summary data
+ggplot(df_summary, aes(x = gender, y = n, fill = response)) +
+
+  geom_col(position = "fill",
+           color = "black", 
+           width = .6,
+           show.legend = F) +
+           
+  # --- ADD AND CUSTOMIZE THE PERCENTAGE LABELS ---
+  geom_text(
+    # Use the pre-calculated percentage 'pct' for the label
+    aes(label = percent(pct, accuracy = 1)),
+    # This is key: position the labels in the middle of each stacked segment
+    position = position_fill(vjust = 0.5),
+    size = 9, # Adjust size here (unit is mm)
+    color = "white",
+    fontface = "bold",
+    family = "Times New Roman"
+  ) +
+
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = my_custom_colors1) +
+  labs(y = NULL, x = NULL) +
+  coord_flip() +
+  # guides(fill = guide_legend(reverse = TRUE)) +
+  theme_classic(base_size = 25, base_family = "Times New Roman") +
+  
+  theme(
+    axis.text.y = element_text(size = 28),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+    # Control size of the percentage axis labels "0%", "50%", etc.
+    # axis.text.x = element_text(size = 20),
+    # Control the legend title size
+    # legend.title = element_text(size = 22),
+    # Control the legend item ("yes", "no") size
+    # legend.text = element_text(size = 20),
+    # legend.title = element_blank(),
+    # legend.position = "top"
+  )
+
+```
+
+:::
+:::
+
+:::{.fragment}
+:::{.figure}
+
+```{r}
+#| fig-cap: "Response by Hispanicity<sup>*</sup>"
+#| out-width: "95%"
+#| fig-align: "center"
+
+
+df_summary <- df |>
+  filter(!response == "na",
+         race %in% c("white", "hispanic")) |> 
+  count(race, response) |>  
+  group_by(race) |>       
+  mutate(pct = n / sum(n)) |>
+  ungroup() |> 
+  mutate(response = factor(response, levels = c("no", "yes")))
+  
+p3 <- ggplot(df_summary, aes(x = race, y = n, fill = response)) +
+  geom_col(position = "fill",
+           color = "black", 
+           width = .6,
+           show.legend = F) +
+           
+  geom_text(
+    # Use the pre-calculated percentage 'pct' for the label
+    aes(label = percent(pct, accuracy = 1)),
+    # This is key: position the labels in the middle of each stacked segment
+    position = position_fill(vjust = 0.5),
+    size = 9, # Adjust size here (unit is mm)
+    color = "white",
+    fontface = "bold",
+    family = "Times New Roman"
+  ) +
+
+  scale_y_continuous(labels = scales::percent) +
+  
+  scale_fill_manual(values = my_custom_colors1) +
+  labs(y = NULL, x = NULL) + 
+  coord_flip() +
+  # guides(fill = guide_legend(reverse = TRUE)) +
+  theme_classic(base_size = 25, base_family = "Times New Roman") +
+  
+  theme(
+    axis.text.y = element_text(size = 28),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    # legend.text = element_text(size = 20),
+    # legend.title = element_blank(),
+    # legend.position = "top",
+    plot.subtitle = element_text(size = 18)
+  )
+  
+p3
+```
+:::
+:::
+
+:::{.fragment}
+:::{.figure}
+
+```{r}
+#| fig-cap: "Response by Rurality"
+#| out-width: "95%"
+#| fig-align: "center"
+
+df_summary <- df |>
+  filter(!response == "na") |>
+  count(rural_urban, response) |> # Count combinations of gender and response
+  group_by(rural_urban) |>       # Calculate percentages within each gender group
+  mutate(pct = n / sum(n)) |>
+  ungroup() |> 
+  mutate(response = factor(response, levels = c("no", "yes")))
+
+# Create the plot using summary data
+ggplot(df_summary, aes(x = rural_urban, y = n, fill = response)) +
+
+  geom_col(position = "fill",
+           color = "black", 
+           width = .6,
+           show.legend = F) +
+           
+  # --- ADD AND CUSTOMIZE THE PERCENTAGE LABELS ---
+  geom_text(
+    # Use the pre-calculated percentage 'pct' for the label
+    aes(label = percent(pct, accuracy = 1)),
+    # This is key: position the labels in the middle of each stacked segment
+    position = position_fill(vjust = 0.5),
+    size = 9, # Adjust size here (unit is mm)
+    color = "white",
+    fontface = "bold",
+    family = "Times New Roman"
+  ) +
+
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = my_custom_colors1) +
+  labs(y = NULL, x = NULL) + 
+  coord_flip() +
+  # guides(fill = guide_legend(reverse = TRUE)) +
+  theme_classic(base_size = 25, base_family = "Times New Roman") +
+  theme(
+    axis.text.y = element_text(size = 28),
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+    # Control size of the percentage axis labels "0%", "50%", etc.
+    # axis.text.x = element_text(size = 20),
+    # Control the legend title size
+    # legend.title = element_text(size = 22),
+    # Control the legend item ("yes", "no") size
+    # legend.text = element_text(size = 20),
+    # legend.title = element_blank(),
+    # legend.position = "top"
+  )
+
+```
+
+:::
+:::
+
+::::
+
+## {.smaller}
+### Response subtypes 
+
+<br>
+
+::::{.columns}
+:::{.column}
+
+:::{.fragment}
+
+
+#### Yes
+- Specific story
+- General confirmation
+- Pattern confirmation
+- Humorous confirmation
+- Confirmed but witheld
+- Language assumption: Eagle Pass
+
+:::
+:::
+
+:::{.column}
+
+:::{.fragment}
+
+
+#### No
+- "If I've got something to say to you..." - female, African American, Beaumont
+
+- "I respect everybody" - female, Hispanic, Donna
+
+- stonewalling "no" [CLIP] - our problem is of course that students need to learn how to follow up
+
+- claiming that memory failed them - combining refusal to answer with social geniality [CLIP]
+
+- other...?
+
+:::
+:::
+::::
+
+# Conservative <br>Self-Positioning
+
+## Cultural conservatism
+
+</br>
+
+:::{.fragment}
+CRINGE
+  : A pop-culturally grounded concept.</br></br>
+:::
+
+:::{.fragment}
+Cultural conservatism 
+  : Negatively predicts the effectiveness of CT phaticity.</br></br>
+:::
+
+:::{.fragment}
+Political conservatism
+  : Explicit alignment with a political party/movement.
+:::
+
+##
+
+VIZ: explicit political self-positioning
+
+VIZ: conservatism by evaluation of change (i.e. discourse-analytically deduced from *place talk* sections of interviews)
+
+VIZ: conservatism crossed with outcome, especially types of "no"
+
+VIZ: conservatism by rurality 
+
+VIZ: conservatism by hispanicity
+
+## {.smaller}
+### Coding for culturally conservative positioning in the data
+
+- You might look at the pop music question [CLIP Pflugerville example] as a bellwether, but actually, that does not seem to be a good predictor [CLIP Pflugerville CT question]
+- The elicitation of PT as key interview passage: coded for characterization and evaluation of change in the community
+  - [CLIP positive change, CLIP negative change]
+- Broad scan for political self-positioning in discourse of any kind (but note the above caveat)
+  - [CLIP left-leaning, CLIP right-leaning]
+
+## Key takeaways
+
+1. Train students more deeply, specifically in the art of follow-up questions
+1. Take into account that CT makes participants uncomfortable, and it doesn't land in too many cases
+1. Focus on more PT instead of CT
+1. Test CT elicitation again in a year when we request younger participants (2026?), and combine with other questions designed to elicit CT
+
+# Conclusion
+
+> Like the DoD question before it, CT elicitation has been shown not to be a silver bullet in the sociolinguistic interview. The most important lesson for interviewers who choose to ask questions with pop-cultural resonance is to keep the likely pop-cultural knowledge of their participants in mind. 
+
+
