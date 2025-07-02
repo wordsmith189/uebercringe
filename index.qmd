@@ -792,7 +792,7 @@ df |>
 
 Thank you for your attention.
 
-<br>
+<hr>
 
 E-mail: TxE@utexas.edu
 
