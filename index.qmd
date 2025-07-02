@@ -40,10 +40,7 @@ df <- import("data_merged.xlsx")
 getwd()
 ```
 
-## Overview {background-image="img/cowboys.png"} 
-
-
-
+## Home to Texas (H2TX)
 
 ::: {.notes}
 
@@ -55,7 +52,8 @@ getwd()
 
 :::
 
-## Outline
+## {background-iframe="https://www.youtube.com/embed/1GkKVKZJmiw?si=qED101A2aB1T0APj" background-interactive="true"}
+
 
 ## 
 
@@ -90,50 +88,55 @@ df_clip_1 |>
   Your browser does not support the audio element.
 </audio>
 
-## CRINGE
+## {.smaller}
+### Some concepts
 
+:::{.fragment}
+sociolinguistic interview 
+  : Key data elicitation method in dialectology and sociolinguistics
+:::
 
+:::{.fragment}
+observer's paradox 
+  : The challenge of studying natural speech patterns when the very act of observing alters the way people speak (Labov 1972 a, b).
+:::
 
-## CRINGE in interaction
+:::{.fragment}
+phatic communion
+  : Create "ties of union" through the "exchange of words" (Malinowski 1923)
+:::
 
-
-
-## CRINGE as a phatic device
-
-
-
-## Phaticity and the sociolinguistic interview
-
-- Interview as key data elicitation method in dialectology and sociolinguistics
-- Observer's paradox (Labov 1972)
-- DoD question (ibid.)
+:::{.fragment}
+danger-of-death (DoD) question 
+  : An interviewing tool used to elicit natural, casual speech from participants (Labov 1972 a, b).
+:::
 
 ## Critiques of the DoD question
 
 - ...
-- ...
-- Sneller & Barnard suggest drawing on pop-cultural context for chatty questions
+- Sneller & Barnhardt (2023)  suggest drawing on pop-cultural context for chatty questions
 
-## CRINGE talk phaticity
+## {.smaller}
+### CRINGE as a phatic device
 
-Evidence that CT can engender phatic communion:
-
-[literature]
-
-## Phatic communion, CA, and DA
-
-Some definitions
+:::{.incremental}
+- The humor inherent in CT makes speakers volunteer these topics precisely for phaticity's sake (Jefferson 1984).
+- Speakers seek the relief of sharing cringey experiences in conversation online and f2f (Rimé 2009).
+- Embrace of awkwardness can engender authenticity (Haen 2018, Lotfy 2024).
+:::
 
 ## Research questions
 
+::::{.columns}
+:::{.column width="65%"}
 1. Can a question aimed at eliciting CT effectively replace the DoD question in sociolinguistic interviews? 
 1. If not, why? 
+:::
+:::{.column}
+:::
+::::
 
 # Data and Methods
-
-## Home to Texas (H2TX)
-
-## {background-iframe="https://www.youtube.com/embed/1GkKVKZJmiw?si=qED101A2aB1T0APj" background-interactive="true"}
 
 
 ## 
