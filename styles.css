@@ -14,7 +14,7 @@
   font-family: "Georgia", serif;
 }
 
-/* * CORRECTED RULE FOR FIGURE CAPTIONS
+/* * FIGURE CAPTIONS
  * This targets the <figcaption> element that Quarto generates.
  */
 .reveal figcaption {
@@ -28,20 +28,8 @@
   width: auto;      /* Ensures width scales proportionally */
 }
 
-/* When a slide with data-state containing "white-text" is active... */
-.reveal[data-state*="white-text"] {
-  color: white !important; /* Make default paragraph/list text white */
-}
-
-/* ...also target the headers on that slide... */
-.reveal[data-state*="white-text"] h1,
-.reveal[data-state*="white-text"] h2,
-.reveal[data-state*="white-text"] h3 {
-  color: white !important;
-}
-
-/* ...and also target the presentation footer. */
-.reveal[data-state*="white-text"] .footer {
-  color: white !important;
+/* A simple, direct rule for testing */
+.white-text {
+  color: white;
 }
 

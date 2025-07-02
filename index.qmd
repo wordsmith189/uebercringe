@@ -24,8 +24,6 @@ format:
    title-slide-attributes:
      data-background-image: img/cowboys.png
      data-background-size: cover
-resources:
-  - ./audio/
 execute:
   echo: false
 ---
@@ -33,214 +31,37 @@ execute:
 
 ```{r setup-packages}
 library(pacman)
-p_load(rio, tidyverse, janitor)
-```
-
-```{r get-main-data, eval=FALSE}
-df <- import("H2TX_2024_Language_discourse_analysis.xlsx") |> 
-  clean_names() |> 
-  mutate(file_name = tolower(file_name),
-         file_name = tools::file_path_sans_ext(file_name))
-```
-
-```{r get-demo-info, eval=FALSE}
-df_demo <- import('demographic_info.xlsx') |> 
-  clean_names() |> 
-  mutate(transcript_name = tolower(transcript_name),
-         file_name = transcript_name,
-         transcript_name = NULL)
-
-# attach to df
-df <- df |> 
-  left_join(df_demo) |> 
-  mutate(
-    number_of_audio_files = NULL,
-    interview_date = NULL,
-    gender = what_is_your_gender,
-    what_is_your_gender = NULL,
-    race = what_is_your_race,
-    what_is_your_race = NULL,
-    if_race_other_please_specify = NULL,
-    age = how_old_are_you,
-    how_old_are_you = NULL,
-    education = what_is_your_highest_level_of_education,
-    what_is_your_highest_level_of_education = NULL,
-    occupation = what_do_you_do_for_work,
-    what_do_you_do_for_work = NULL,
-    place = in_which_city_town_do_you_live,
-    place = str_to_title(place),
-    place = str_remove_all(place, ", Texas|, Tx|, TX"),
-    in_which_city_town_do_you_live = NULL,
-    multiling = do_you_speak_any_languages_other_than_english,
-    do_you_speak_any_languages_other_than_english = NULL
-  ) |> 
-  select(file = file_name,
-         timecode_of_question:political_positioning,
-         gender, race, hispanic = are_you_hispanic_or_latino,
-         age:multiling,
-         how_old_were_you_when_you_moved_here:in_which_city_town_do_you_work,
-         everything()
-         )
-
-```
-
-```{r get-counties, eval=FALSE}
-df_counties <- import('/Users/LH9896/Library/CloudStorage/Box-Box/_TELL/Projects/TELL & H2TX/demographic data/data/places_counties.xlsx') |> 
-  mutate(place = str_to_title(place)) 
-
-df <- df |> 
-  left_join(df_counties)
-```
-
-```{r formatting, eval=FALSE}
-df <- df |> 
-  
-    rename(
-      cringe_question_t = timecode_of_question,
-      tell_incl = qualifies_for_tell_analysis,
-      lineage_origin = thinking_back_on_your_family_lineage_who_among_your_ancestors_immigrated_to_texas_and_where_did_they_come_from,
-      community_lgs = outside_of_your_family_what_languages_are_spoken_in_your_community_in_addition_to_english,
-      res_until_13 = where_did_you_live_before_the_age_of_13,
-      res_since_13 = since_the_age_of_13_in_which_cities_towns_have_you_lived,
-      age_arrived = how_old_were_you_when_you_moved_here,
-      other_lg_age = at_what_age_did_you_start_learning_the_other_language_s,
-      other_lg_iloc = with_whom_do_you_speak_this_language,
-      other_lg_lit = have_you_learned_how_to_read_and_write_in_your_language,
-      other_lg_lit_wish = if_no_do_you_wish_you_could_read_and_write_in_your_language,
-      other_lg_edu = did_you_receive_any_education_about_your_language_at_school,
-      place_work = in_which_city_town_do_you_work,
-      all_pop_gt_5000 = all_pop_greater_than_5000,
-      
-    ) |> 
-  
-  mutate(
-    gender = tolower(gender),
-    race = tolower(race),
-    hispanic = tolower(hispanic),
-    age = as.numeric(age),
-    response = tolower(response),
-    explanation_type = tolower(explanation_type),
-    if_yes_region = NULL,
-    education = str_to_title(education),
-    multiling = tolower(multiling),
-    tell_incl = tolower(tell_incl),
-    region = str_remove_all(region, " Texas")
-    
-  ) 
-
-dft <- df |> select(file, cringe_question_t)
-
-p_load(hms)
-
-dft <- dft |> 
-  mutate(
-    # Remove init. apostrophe and handle string "NA"s
-    cringe_question_t = cringe_question_t |>
-      na_if("NA") |>
-      str_remove("^'")
-  ) |>
-  # Use separate() to split time string into components
-  # 3 columns (c1, c2, c3)
-  separate(
-    cringe_question_t,
-    into = c("c1", "c2", "c3"),
-    sep = ":",
-    fill = "right", # Pad with NAs on the right if there are fewer than 3 parts
-    remove = FALSE, # Keep the cleaned_time column for reference
-    convert = TRUE  # Convert new columns to numeric where possible
-  ) |>
-  # Now, calculate total_seconds based on which components exist.
-  mutate(
-    cringe_question_t_s = case_when(
-      # If c3 is not NA, we have hh:mm:ss format (c1=h, c2=m, c3=s)
-      !is.na(c3) ~ (c1 * 3600) + (c2 * 60) + c3,
-
-      # If c3 is NA, we have mm:ss format (c1=m, c2=s)
-      is.na(c3) ~ (c1 * 60) + c2,
-
-      # This handles any remaining cases, such as if cleaned_time was NA
-      TRUE ~ NA_real_
-    ),
-    cringe_question_t = as_hms(cringe_question_t_s)
-  ) |>
-  # Select final columns for output
-  select(file, cringe_question_t, cringe_question_t_s)
-
-
-df <- df |>
-  select(-cringe_question_t) |> 
-  left_join(dft) |> 
-  select(file, cringe_question_t, cringe_question_t_s, everything())
-
-```
-
-```{r get-rucc, eval=FALSE}
-df_rucc <- import('/Users/LH9896/Library/CloudStorage/Box-Box/_TELL/Projects/TELL & H2TX/demographic data/rural_urban_continuum_codes/Ruralurbancontinuumcodes2023.xlsx') |> 
-  clean_names() |> 
-  filter(state == "TX") |> 
-  select(county = county_name, rucc = rucc_2023) |> 
-  mutate(county = str_remove_all(county, " County"))
-
-df <- df |> 
-  left_join(df_rucc) |> 
-  select(1:20, 22:36, place, everything()) |> 
-  select(1:21, 36:44, everything())
-
-df_pol <- import("data_political.xlsx")
-
-df <- df |> 
-  left_join(df_pol) |> 
-  select(1:14, political_leaning, everything())
-
-df <- df |> 
-  mutate(
-    race = if_else(startsWith(race, "white,american"), "american indian", race),
-    race = str_replace(race, "black or african american", "african american"),
-    race = str_replace(race, "other (please specify)", "hispanic"),
-    race = ifelse((hispanic == "yes"), "hispanic", race)
-  )
-
-df <- df |> 
-  mutate(race = ifelse(is.na(race), "white", race))
-
-df |> export("data_merged.xlsx")
-
+p_load(rio, tidyverse, janitor, scales, forcats, viridis, RColorBrewer, gt)
 ```
 
 ```{r load-data, include=FALSE}
 df <- import("data_merged.xlsx")
+
+getwd()
 ```
-
-```{r show-data, eval=FALSE}
-
-df |> tibble()
-```
-
 
 ## Overview {background-image="img/cowboys.png"} 
 
-::: {.absolute-image}
-![](img/interview.png)
-:::
+
 
 
 ::: {.notes}
+
 - recent dialectological project
 - unusual opportunity of collecting interviews in over 70 different communities and municipalities across Texas through student fieldworkers
 - without me present
 - forced to consider Obs. Par.
 - include questions targeting CRINGE as a way to achieve this
+
 :::
 
-
 ## Outline
-
 
 ## 
 
 **DelRio_DC_07022024**
 
-::: {style="width: 90%; margin: auto;"}
+:::{style="width: 90%; margin: auto;"}
 
 ```{r}
 p_load(gt)
@@ -261,13 +82,13 @@ df_clip_1 |>
   ) 
 
 ```
+
 :::
 
 <audio controls>
-  <source src="audio/Language_DelRio_DC_07022024_1.mp3" type="audio/mpeg">
+  <source src="av/Language_DelRio_DC_07022024_1.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
-
 
 ## CRINGE
 
@@ -312,9 +133,16 @@ Some definitions
 
 ## Home to Texas (H2TX)
 
-##
+## {background-iframe="https://www.youtube.com/embed/1GkKVKZJmiw?si=qED101A2aB1T0APj" background-interactive="true"}
 
-(video)
+
+## 
+### Collecting sociolinguistic interviews with Home To Texas (H2TX)
+
+<br> 
+
+Decentralized community-embedded fieldwork
+: Wide geographic spread; superior community access.
 
 ## H2TX 2024 interviews
 
@@ -354,8 +182,6 @@ right column:
 #| out-width: "95%"
 #| fig-align: "center"
 
-p_load(RColorBrewer, scales)
-# Generate all colors from "RdBu" palette
 all_rdbu_colors <- brewer.pal(9, "Set2")
 # Select the 3rd and 10th colors
 my_custom_colors1 <- all_rdbu_colors[c(2,1)]
@@ -376,13 +202,13 @@ p1 <- ggplot(dat, aes(response, n,
     aes(label = n), 
     hjust = -0.2,  
     size = 10,  # font size. Note: unit different (mm)
-    family = "Times New Roman"
+    family = "Georgia"
   ) +
   # make sure plot area is wide enough for new text
   scale_y_continuous(expand = expansion(mult = c(0, .15))) +
   coord_flip() +
   scale_fill_manual(values = my_custom_colors1) +
-  theme_classic(base_size = 25, base_family = "Times New Roman") +
+  theme_classic(base_size = 25, base_family = "Georgia") +
   theme(axis.text.y = element_text(size = 30),
     axis.text.x = element_blank(),
     axis.ticks.x = element_blank())
@@ -426,15 +252,15 @@ ggplot(df_summary, aes(x = gender, y = n, fill = response)) +
     size = 9, # Adjust size here (unit is mm)
     color = "white",
     fontface = "bold",
-    family = "Times New Roman"
+    family = "Georgia"
   ) +
 
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = percent) +
   scale_fill_manual(values = my_custom_colors1) +
   labs(y = NULL, x = NULL) +
   coord_flip() +
   # guides(fill = guide_legend(reverse = TRUE)) +
-  theme_classic(base_size = 25, base_family = "Times New Roman") +
+  theme_classic(base_size = 25, base_family = "Georgia") +
   
   theme(
     axis.text.y = element_text(size = 28),
@@ -487,16 +313,16 @@ p3 <- ggplot(df_summary, aes(x = race, y = n, fill = response)) +
     size = 9, # Adjust size here (unit is mm)
     color = "white",
     fontface = "bold",
-    family = "Times New Roman"
+    family = "Georgia"
   ) +
 
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = percent) +
   
   scale_fill_manual(values = my_custom_colors1) +
   labs(y = NULL, x = NULL) + 
   coord_flip() +
   # guides(fill = guide_legend(reverse = TRUE)) +
-  theme_classic(base_size = 25, base_family = "Times New Roman") +
+  theme_classic(base_size = 25, base_family = "Georgia") +
   
   theme(
     axis.text.y = element_text(size = 28),
@@ -510,6 +336,7 @@ p3 <- ggplot(df_summary, aes(x = race, y = n, fill = response)) +
   
 p3
 ```
+
 :::
 :::
 
@@ -546,15 +373,15 @@ ggplot(df_summary, aes(x = rural_urban, y = n, fill = response)) +
     size = 9, # Adjust size here (unit is mm)
     color = "white",
     fontface = "bold",
-    family = "Times New Roman"
+    family = "Georgia"
   ) +
 
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = percent) +
   scale_fill_manual(values = my_custom_colors1) +
   labs(y = NULL, x = NULL) + 
   coord_flip() +
   # guides(fill = guide_legend(reverse = TRUE)) +
-  theme_classic(base_size = 25, base_family = "Times New Roman") +
+  theme_classic(base_size = 25, base_family = "Georgia") +
   theme(
     axis.text.y = element_text(size = 28),
     axis.text.x = element_blank(),
@@ -573,56 +400,219 @@ ggplot(df_summary, aes(x = rural_urban, y = n, fill = response)) +
 
 :::
 :::
-
 ::::
 
 ## {.smaller}
-### Response subtypes 
+### Response subtypes: Yes
+
+<br><br>
+
+```{r}
+#| out-width: "95%"
+#| fig-align: "center"
+
+df |> 
+  filter(response == "yes") |> 
+  count(explanation_type, sort = T) |> 
+  gt() |> 
+  tab_style(
+    style = cell_text(v_align = "top",
+                      size = px(20)),
+    locations = cells_body(columns = everything())
+  ) |> 
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) 
+
+```
+
+
+
+## {.smaller}
+### Clip 3 | Response subtypes: Yes
 
 <br>
 
-::::{.columns}
-:::{.column}
+```{r}
+
+df_clip_2 <-  import('av/Eagle_Pass_NC_06052024_1.xlsx') |> 
+  filter(!is.na(Speaker)) 
+
+df_clip_2 |> 
+  gt() |> 
+  tab_style(
+    style = cell_text(v_align = "top",
+                      size = px(18) ),
+    locations = cells_body(columns = everything())
+  ) |> 
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |> 
+  tab_options(
+    table.width = pct(85),
+    table.margin.left = px(0)
+  )
+
+```
+
+
+
+<audio controls>
+  <source src="av/Eagle_Pass_NC_06052024_1.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+
+
+## {.smaller}
+### Clip 4 | Response subtypes: Yes
+
+<br>
+
+```{r}
+
+df_clip_1 <-  import('av/Azle_HL_06252024_1.xlsx') |> 
+  filter(!is.na(Speaker)) 
+
+df_clip_1 |> 
+  gt() |> 
+  tab_style(
+    style = cell_text(v_align = "top",
+                      size = px(20) ),
+    locations = cells_body(columns = everything())
+  ) |> 
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |> 
+  tab_options(
+    table.width = pct(70),
+    table.margin.left = px(0)
+  )
+
+```
+
+<br>
+
+<audio controls>
+  <source src="av/Azle_HL_06252024_1.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+## {.smaller}
+### Response subtypes: No
+
+<br><br>
+
+```{r}
+#| out-width: "95%"
+#| fig-align: "center"
+
+df |> 
+  filter(response == "no") |> 
+  count(explanation_type, sort = T) |> 
+  gt() |> 
+  tab_style(
+    style = cell_text(v_align = "top",
+                      size = px(20)),
+    locations = cells_body(columns = everything())
+  ) |> 
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) 
+
+```
+
+
+## {.smaller}
+### Clip 5 | Response subtypes: No
+
+<br>
+
+```{r}
+
+df_clip_5 <-  import('av/Donna_AR_07192024_1.xlsx') |> 
+  filter(!is.na(Speaker)) 
+
+df_clip_5 |> 
+  gt() |> 
+  tab_style(
+    style = cell_text(v_align = "top",
+                      size = px(21) ),
+    locations = cells_body(columns = everything())
+  ) |> 
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |> 
+  tab_options(
+    table.width = pct(70),
+    table.margin.left = px(0)
+  )
+
+```
+
+<br>
+
+<audio controls>
+  <source src="av/Donna_AR_07192024_1.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+## {.smaller}
+### Clip 6 | Response subtypes: No
+
+<br>
+
+```{r}
+
+df_clip_6 <-  import('av/Beaumont_MM_06252024_1.xlsx') |> 
+  filter(!is.na(Speaker)) 
+
+df_clip_6 |> 
+  gt() |> 
+  tab_style(
+    style = cell_text(v_align = "top",
+                      size = px(21) ),
+    locations = cells_body(columns = everything())
+  ) |> 
+  tab_style(
+    style = cell_text(weight = "bold"),
+    locations = cells_column_labels()
+  ) |> 
+  tab_options(
+    table.width = pct(70),
+    table.margin.left = px(0)
+  )
+
+```
+
+<br>
+
+<audio controls>
+  <source src="av/Beaumont_MM_06252024_1.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+## Summary {.smaller}
+
+- Of the "no" answers, most avoid "trouble" by offering explanations (no memory, personal values), a laugh, "No, ma'am", or similar.
+- Of the "yes" answers, many failed to provide stories, offered brief jokes, or betrayed discomfort. 
+- Phatic communion around CT was rarely attained. 
+- If it did, the conversational object was something else, e.g. the personal values.
 
 :::{.fragment}
-
-
-#### Yes
-- Specific story
-- General confirmation
-- Pattern confirmation
-- Humorous confirmation
-- Confirmed but witheld
-- Language assumption: Eagle Pass
-
+:::{.callout-tip appearance="simple"}
+Does cultural conservatism predict a stronger rejection of the question?
 :::
 :::
-
-:::{.column}
-
-:::{.fragment}
-
-
-#### No
-- "If I've got something to say to you..." - female, African American, Beaumont
-
-- "I respect everybody" - female, Hispanic, Donna
-
-- stonewalling "no" [CLIP] - our problem is of course that students need to learn how to follow up
-
-- claiming that memory failed them - combining refusal to answer with social geniality [CLIP]
-
-- other...?
-
-:::
-:::
-::::
 
 # Conservative <br>Self-Positioning
 
-## Cultural conservatism
-
-</br>
+## 
 
 :::{.fragment}
 CRINGE
@@ -631,44 +621,181 @@ CRINGE
 
 :::{.fragment}
 Cultural conservatism 
-  : Negatively predicts the effectiveness of CT phaticity.</br></br>
+  : Coded on place talk segments of the interviews. Might negatively predict CT phaticity.</br></br>
 :::
 
 :::{.fragment}
 Political conservatism
-  : Explicit alignment with a political party/movement.
+  : Explicit alignment with a political position.
 :::
 
-##
+## Explicit political alignment {.smaller}
 
-VIZ: explicit political self-positioning
+```{r}
+#| out-width: "95%"
+#| fig-align: "center"
 
-VIZ: conservatism by evaluation of change (i.e. discourse-analytically deduced from *place talk* sections of interviews)
+my_colors <- c(
+  "unclear" = "#FAF0E6",      
+  "conservative" = "#DE0100", 
+  "progressive" = "#3355FF",  
+  "none" = "#303030"          
+)
 
-VIZ: conservatism crossed with outcome, especially types of "no"
+df_political <- rio::import("data_political.csv") |> 
+  mutate(political_leaning = str_trim(political_leaning)
+           )
 
-VIZ: conservatism by rurality 
+plot_data <- df_political |>
+  filter(!is.na(political_leaning), political_leaning != "NA", 
+         political_leaning!="") |>
+  count(political_leaning) |>
+  mutate(political_leaning = fct_reorder(political_leaning, n),
+         text_color = case_when(
+           political_leaning == "unclear" ~ "black", 
+           TRUE                           ~ "white"  
+         )
+         )
 
-VIZ: conservatism by hispanicity
+ggplot(plot_data, aes(x = political_leaning, y = n, fill = political_leaning)) +
+  # Create the bars
+  geom_col(show.legend = FALSE,
+           width = 0.6
+           ) +
+  
+  geom_text(
+    aes(label = n, color = text_color), 
+    hjust = 1.2,
+    size = 8,
+    family = "Georgia",
+    show.legend = F
+  ) +
+  coord_flip() +
+  scale_fill_manual(values = my_colors) +
+  scale_color_identity() +
+  labs(
+    title = "Frequency of Political Leaning",
+    x = NULL, 
+    y = NULL  
+  ) +
+  theme_classic(base_size = 25, base_family = "Georgia") +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.line.x = element_blank() 
+  )
+```
 
-## {.smaller}
-### Coding for culturally conservative positioning in the data
+## 
 
-- You might look at the pop music question [CLIP Pflugerville example] as a bellwether, but actually, that does not seem to be a good predictor [CLIP Pflugerville CT question]
-- The elicitation of PT as key interview passage: coded for characterization and evaluation of change in the community
-  - [CLIP positive change, CLIP negative change]
-- Broad scan for political self-positioning in discourse of any kind (but note the above caveat)
-  - [CLIP left-leaning, CLIP right-leaning]
+:::: {.container .incremental layout-ncol="2"}
+:::{.fragment}
+:::{.figure}
 
-## Key takeaways
+```{r}
+#| fig-cap: "Response by political leaning"
+#| out-width: "95%"
+#| fig-align: "center"
 
-1. Train students more deeply, specifically in the art of follow-up questions
-1. Take into account that CT makes participants uncomfortable, and it doesn't land in too many cases
-1. Focus on more PT instead of CT
-1. Test CT elicitation again in a year when we request younger participants (2026?), and combine with other questions designed to elicit CT
+df |> 
+  filter(response != "na") |> 
+  filter(political_leaning %in% c("conservative", "progressive")) |> 
+  ggplot(aes(x = response)) +
+  geom_bar(aes(y = after_stat(prop), group = 1), width = .5) +
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~political_leaning) +
+  labs(x = NULL, y = NULL) + 
+  theme_classic(base_size = 25, base_family = "Georgia") +
+  theme(
+    axis.text.x = element_text(angle = 17, vjust = .7),
+    axis.ticks.x = element_blank(),
+    axis.line.x = element_blank()  
+  )
+```
+:::
+:::
 
-# Conclusion
+:::{.fragment}
+:::{.figure}
 
-> Like the DoD question before it, CT elicitation has been shown not to be a silver bullet in the sociolinguistic interview. The most important lesson for interviewers who choose to ask questions with pop-cultural resonance is to keep the likely pop-cultural knowledge of their participants in mind. 
+```{r}
+#| fig-cap: "Yes-response types by political leaning"
+#| out-width: "95%"
+#| fig-align: "center"
+
+df |> 
+  filter(response == "yes") |> 
+  filter(political_leaning %in% c("conservative", "progressive")) |> 
+  ggplot(aes(x = explanation_type)) +
+  geom_bar(aes(y = after_stat(prop), group = 1), width = .5) +
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~political_leaning) +
+  labs(x = NULL, y = NULL) + 
+  theme_classic(base_size = 25, base_family = "Georgia") +
+  theme(
+    axis.text.x = element_text(angle = 17, vjust = .7),
+    axis.ticks.x = element_blank(),
+    axis.line.x = element_blank()  
+  )
+```
+:::
+:::
+
+:::{.fragment}
+:::{.figure}
+
+```{r}
+#| fig-cap: "No-response types by political leaning"
+#| out-width: "95%"
+#| fig-align: "center"
+
+df |> 
+  filter(response == "no") |> 
+  filter(political_leaning %in% c("conservative", "progressive")) |> 
+  ggplot(aes(x = explanation_type)) +
+  geom_bar(aes(y = after_stat(prop), group = 1), width = .5) +
+  scale_y_continuous(labels = scales::percent) +
+  facet_wrap(~political_leaning) +
+  labs(x = NULL, y = NULL) + 
+  theme_classic(base_size = 18, base_family = "Georgia") +
+  theme(
+    axis.text.x = element_text(angle = 15, vjust = .7),
+    axis.ticks.x = element_blank(),
+    axis.line.x = element_blank()  
+  )
+```
+:::
+:::
+::::
+
+
+# Conclusions {background-image="img/cowboys2.png"} 
+
+## Conclusions {.smaller}
+
+:::{.incremental}
+1. CT elicitation was found to be mostly at odds with its designated purpose in the slx interview.
+1. Short of sufficient case numbers for a robust deduction, we emerge with a new HT: that orientations toward conservatism, as proxies for openness, may predict the success of the CT question in the slx interview.
+:::
+
+## Methodological takeaways {.smaller}
+
+:::{.incremental}
+1. Train student interviewers more deeply in the art of follow-up questions.
+1. Take into account that CT can make participants uncomfortable - it may not land.
+1. Square the protocol with participants' formal perception of the interview event.
+1. Focus on more PT instead of CT.
+1. Test CT elicitation again in one year when we request younger participants (2026?), and combine with other questions designed to elicit CT
+:::
+
+## {background-image="img/black.png" .white-text}
+
+Thank you for your attention.
+
+<br>
+
+E-mail: TxE@utexas.edu
+
+Web: https://larshinrichs.site
 
 
