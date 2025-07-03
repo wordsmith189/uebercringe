@@ -111,10 +111,22 @@ danger-of-death (DoD) question
   : An interviewing tool used to elicit natural, casual speech from participants (Labov 1972 a, b).
 :::
 
-## Critiques of the DoD question
+## {.smaller}
+### Critiques of the DoD question and observer's paradox
 
-- ...
-- Sneller & Barnhardt (2023)  suggest drawing on pop-cultural context for chatty questions
+:::{.incremental}
+- Doubts about effectiveness (Milroy 1987, Butters 2000)
+- Ethical problems with trauma narrative elicitation (Finlay 2005, Mendoza-Denton 2008, Schilling 2013)<br>&nbsp;
+- False dilemma? Slx interview as interactional event in its own right. All narrative is performative (Johnstone 2006, Schilling 2008, De Fina & Perrino 2011).
+- Effects of observer's paradox can be mitigated (Cukor-Avila 2000)
+- Sneller & Barnhardt (2023): pop-cultural context for chatty questions
+:::
+
+:::{.fragment}
+:::{.callout-tip appearance="simple"}
+In designing slx interview questions for the 21st century, we should move away from a concern with observer's paradox and toward **phaticity**.
+:::
+:::
 
 ## {.smaller}
 ### CRINGE as a phatic device
@@ -129,7 +141,7 @@ danger-of-death (DoD) question
 
 ::::{.columns}
 :::{.column width="65%"}
-1. Can a question aimed at eliciting CT effectively replace the DoD question in sociolinguistic interviews? 
+1. Can a question aimed at eliciting CT effectively achieve what the DoD question was designed to do in slx interviews? 
 1. If not, why? 
 :::
 :::{.column}
@@ -156,9 +168,16 @@ Decentralized community-embedded fieldwork
 
 ## Interview protocol
 
-3-part structure
+A. The community: strengths, weaknesses, and change (open-ended)
+A. Multilingualism: personal background and attitudes (survey questions and Likert scale responses)
+A. Open-ended conversation questions
+A. Reading passage
 
-Key question: story about someone else... CT elicitation <br>[CLIP of somewhere that it worked]
+
+**Key question:** no. 15
+
+> Did you ever tell a story about another person, thinking the other person was not near you, but then turned around and saw that person was standing right next to you? <br>&nbsp;&nbsp;a.	Could you tell me about that? What happened?
+
 
 ## Method
 
@@ -784,7 +803,8 @@ df |>
 
 :::{.incremental}
 1. CT elicitation was found to be mostly at odds with its designated purpose in the slx interview.
-1. Short of sufficient case numbers for a robust deduction, we emerge with a new HT: that orientations toward conservatism, as proxies for openness, may predict the success of the CT question in the slx interview.
+1. Factors like familiarity, general openness, and interviewer persona seemed more effective.
+1. New HT: orientations toward conservatism, as proxies for openness, may predict the success of the CT question in the slx interview.
 :::
 
 ## Methodological takeaways {.smaller}
@@ -794,17 +814,16 @@ df |>
 1. Take into account that CT can make participants uncomfortable - it may not land.
 1. Square the protocol with participants' formal perception of the interview event.
 1. Focus on more PT instead of CT.
-1. Test CT elicitation again in one year when we request younger participants (2026?), and combine with other questions designed to elicit CT
+1. Test CT elicitation again in one year when we request younger participants (2026?), and combine with one or two other questions designed to elicit CT.
 :::
 
-## {background-image="img/black.png" .white-text}
+## 
 
 Thank you for your attention.
 
-<hr>
 
-E-mail: TxE@utexas.edu
+<br>e-mail: TxE@utexas.edu 
+<br>www: https://larshinrichs.site 
 
-Web: https://larshinrichs.site
 
 
