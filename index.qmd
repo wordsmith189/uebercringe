@@ -117,7 +117,7 @@ danger-of-death (DoD) question
 :::{.incremental}
 - Doubts about effectiveness (Milroy 1987, Butters 2000)
 - Ethical problems with trauma narrative elicitation (Finlay 2005, Mendoza-Denton 2008, Schilling 2013)<br>&nbsp;
-- False dilemma? Slx interview as interactional event in its own right. All narrative is performative (Johnstone 2006, Schilling 2008, De Fina & Perrino 2011).
+- "False dilemma?" Slx interview as interactional event in its own right... all narrative is performative (Johnstone 2006, Schilling 2008, De Fina & Perrino 2011).
 - Effects of observer's paradox can be mitigated (Cukor-Avila 2000)
 - Sneller & Barnhardt (2023): pop-cultural context for chatty questions
 :::
