@@ -57,7 +57,7 @@ getwd()
 
 ## 
 
-**DelRio_DC_07022024**
+**Clip 1: DelRio_DC_07022024**
 
 :::{style="width: 90%; margin: auto;"}
 
@@ -136,7 +136,7 @@ danger-of-death (DoD) question
 :::
 ::::
 
-# Data and Methods
+# Data and Methods {.light-text background-image="img/Burnet.png" style="color: white;"}
 
 
 ## 
@@ -157,8 +157,6 @@ Decentralized community-embedded fieldwork
 ## Interview protocol
 
 3-part structure
-
-introduce Place Talk (PT) <br>[CLIP with characteristic elicitation, e.g. Midlothian]
 
 Key question: story about someone else... CT elicitation <br>[CLIP of somewhere that it worked]
 
@@ -433,7 +431,7 @@ df |>
 
 
 ## {.smaller}
-### Clip 3 | Response subtypes: Yes
+### Clip 2 | Response subtypes: Yes
 
 <br>
 
@@ -470,16 +468,16 @@ df_clip_2 |>
 
 
 ## {.smaller}
-### Clip 4 | Response subtypes: Yes
+### Clip 3 | Response subtypes: Yes
 
 <br>
 
 ```{r}
 
-df_clip_1 <-  import('av/Azle_HL_06252024_1.xlsx') |> 
+df_clip_3 <-  import('av/Azle_HL_06252024_1.xlsx') |> 
   filter(!is.na(Speaker)) 
 
-df_clip_1 |> 
+df_clip_3 |> 
   gt() |> 
   tab_style(
     style = cell_text(v_align = "top",
@@ -487,7 +485,8 @@ df_clip_1 |>
     locations = cells_body(columns = everything())
   ) |> 
   tab_style(
-    style = cell_text(weight = "bold"),
+    style = cell_text(weight = "bold",
+                      size = px(21)),
     locations = cells_column_labels()
   ) |> 
   tab_options(
@@ -507,7 +506,7 @@ df_clip_1 |>
 ## {.smaller}
 ### Response subtypes: No
 
-<br><br>
+<br>
 
 ```{r}
 #| out-width: "95%"
@@ -519,28 +518,35 @@ df |>
   gt() |> 
   tab_style(
     style = cell_text(v_align = "top",
-                      size = px(20)),
+                      size = px(24)),
     locations = cells_body(columns = everything())
   ) |> 
   tab_style(
-    style = cell_text(weight = "bold"),
+    style = cell_text(
+      weight = "bold",
+      size = px(24) 
+    ),
     locations = cells_column_labels()
-  ) 
+  ) |>
+  tab_options(
+    # table.width = pct(85),
+    table.margin.left = px(2)
+  )
 
 ```
 
 
 ## {.smaller}
-### Clip 5 | Response subtypes: No
+### Clip 4 | Response subtypes: No
 
 <br>
 
 ```{r}
 
-df_clip_5 <-  import('av/Donna_AR_07192024_1.xlsx') |> 
+df_clip_4 <-  import('av/Donna_AR_07192024_1.xlsx') |> 
   filter(!is.na(Speaker)) 
 
-df_clip_5 |> 
+df_clip_4 |> 
   gt() |> 
   tab_style(
     style = cell_text(v_align = "top",
@@ -566,16 +572,16 @@ df_clip_5 |>
 </audio>
 
 ## {.smaller}
-### Clip 6 | Response subtypes: No
+### Clip 5 | Response subtypes: No
 
 <br>
 
 ```{r}
 
-df_clip_6 <-  import('av/Beaumont_MM_06252024_1.xlsx') |> 
+df_clip_5 <-  import('av/Beaumont_MM_06252024_1.xlsx') |> 
   filter(!is.na(Speaker)) 
 
-df_clip_6 |> 
+df_clip_5 |> 
   gt() |> 
   tab_style(
     style = cell_text(v_align = "top",
@@ -613,7 +619,7 @@ Does cultural conservatism predict a stronger rejection of the question?
 :::
 :::
 
-# Conservative <br>Self-Positioning
+# Conservative <br>Self-Positioning {.light-text background-image="img/cross.png" style="color: white;"}
 
 ## 
 
