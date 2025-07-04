@@ -161,10 +161,42 @@ Decentralized community-embedded fieldwork
 
 ## H2TX 2024 interviews
 
-- map
-- rural/urban
-- gender
-- ethnicity
+<br><br>
+
+::::{.columns}
+:::{.column}
+
+```{r}
+df |> 
+  ggplot(aes(rucc)) +
+  geom_density() +
+  labs(y=NULL, x="RUCC") +
+  theme_classic(base_size = 25, base_family = "Georgia")
+
+```
+:::
+
+:::{.column}
+```{r}
+df |> 
+  count(race, sort = T) |> 
+  rename(`Racioethnic ID` = race) |> 
+  gt() |> 
+    tab_style(
+    style = cell_text(v_align = "top",
+                      size = px(22) ),
+    locations = cells_body(columns = everything())
+  ) |> 
+  tab_style(
+    style = cell_text(weight = "bold",
+                      size = px(22)),
+    locations = cells_column_labels()
+  ) 
+```
+:::
+::::
+
+
 
 ## {.smaller}
 ### Interview protocol 
@@ -442,11 +474,12 @@ df |>
   gt() |> 
   tab_style(
     style = cell_text(v_align = "top",
-                      size = px(20)),
+                      size = px(24)),
     locations = cells_body(columns = everything())
   ) |> 
   tab_style(
-    style = cell_text(weight = "bold"),
+    style = cell_text(weight = "bold",
+                      size = px(24)),
     locations = cells_column_labels()
   ) 
 
