@@ -117,7 +117,7 @@ danger-of-death (DoD) question
 :::{.incremental}
 - Doubts about effectiveness (Milroy 1987, Butters 2000)
 - Ethical problems with trauma narrative elicitation (Finlay 2005, Mendoza-Denton 2008, Schilling 2013)<br>&nbsp;
-- "False dilemma?" Slx interview as interactional event in its own right... all narrative is performative (Johnstone 2006, Schilling 2008, De Fina & Perrino 2011).
+- "False dilemma?" - Slx interview as interactional event in its own right... all narrative is performative (Johnstone 2006, Schilling 2008, De Fina & Perrino 2011).
 - Effects of observer's paradox can be mitigated (Cukor-Avila 2000)
 - Sneller & Barnhardt (2023): pop-cultural context for chatty questions
 :::
@@ -166,30 +166,35 @@ Decentralized community-embedded fieldwork
 - gender
 - ethnicity
 
-## Interview protocol
+## {.smaller}
+### Interview protocol 
 
-A. The community: strengths, weaknesses, and change (open-ended)
-A. Multilingualism: personal background and attitudes (survey questions and Likert scale responses)
-A. Open-ended conversation questions
-A. Reading passage
+<br>
 
+**A** - The community: strengths, weaknesses, and change <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(open-ended)
 
-**Key question:** no. 15
+**B** - Multilingualism: personal background and attitudes <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(survey questions and Likert scale responses)
 
-> Did you ever tell a story about another person, thinking the other person was not near you, but then turned around and saw that person was standing right next to you? <br>&nbsp;&nbsp;a.	Could you tell me about that? What happened?
+**C** - Open-ended conversation questions
 
+**D** - Reading passage
 
-## Method
+<br>
 
-- DA
-- Content analysis
+:::{.fragment}
+> **Key question: no. 15**
+<br>Did you ever tell a story about another person, thinking the other person was not near you, but then turned around and saw that person was standing right next to you? &nbsp;&nbsp;[a.	Could you tell me about that? What happened?]
+:::
 
-right column:
+## Method: Content analysis
+<br>
 
-1. Did participant answer "yes" or "no"?
-1. If "yes", did they offer a story? 
-1. If "no", was any context provided? 
-1. Can we muster any explanation for the non-success cases?
+::: {.callout-note icon=false appearance=simple}
+## Did participant answer "yes" or "no"?
+
+- If "yes", did they offer a story? 
+- If "no", was an explanation provided? 
+:::
 
 ## 
 
