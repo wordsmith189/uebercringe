@@ -665,10 +665,12 @@ df_clip_5 |>
 
 ## Summary {.smaller}
 
+:::{.incremental}
 - Of the "no" answers, most avoid "trouble" by offering explanations (no memory, personal values), a laugh, "No, ma'am", or similar.
 - Of the "yes" answers, many failed to provide stories, offered brief jokes, or betrayed discomfort. 
 - Phatic communion around CT was rarely attained. 
 - If it did, the conversational object was something else, e.g. the personal values.
+:::
 
 :::{.fragment}
 :::{.callout-tip appearance="simple"}
@@ -747,8 +749,8 @@ ggplot(plot_data, aes(x = political_leaning, y = n, fill = political_leaning)) +
   theme_classic(base_size = 25, base_family = "Georgia") +
   theme(
     axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(),
-    axis.line.x = element_blank() 
+    axis.ticks.x = element_blank()
+    #axis.line.x = element_blank() 
   )
 ```
 
@@ -774,8 +776,8 @@ df |>
   theme_classic(base_size = 25, base_family = "Georgia") +
   theme(
     axis.text.x = element_text(angle = 17, vjust = .7),
-    axis.ticks.x = element_blank(),
-    axis.line.x = element_blank()  
+    axis.ticks.x = element_blank()
+    #axis.line.x = element_blank()  
   )
 ```
 :::
@@ -800,8 +802,8 @@ df |>
   theme_classic(base_size = 25, base_family = "Georgia") +
   theme(
     axis.text.x = element_text(angle = 17, vjust = .7),
-    axis.ticks.x = element_blank(),
-    axis.line.x = element_blank()  
+    axis.ticks.x = element_blank()
+    #axis.line.x = element_blank()  
   )
 ```
 :::
@@ -826,8 +828,8 @@ df |>
   theme_classic(base_size = 18, base_family = "Georgia") +
   theme(
     axis.text.x = element_text(angle = 15, vjust = .7),
-    axis.ticks.x = element_blank(),
-    axis.line.x = element_blank()  
+    axis.ticks.x = element_blank()
+    #axis.line.x = element_blank()  
   )
 ```
 :::
@@ -837,7 +839,7 @@ df |>
 
 # Conclusions {background-image="img/cowboys2.png"} 
 
-## Conclusions {.smaller}
+## Conclusions
 
 :::{.incremental}
 1. CT elicitation was found to be mostly at odds with its designated purpose in the slx interview.
