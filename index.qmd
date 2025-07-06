@@ -541,7 +541,6 @@ df_clip_2 |>
 
 ```
 
-<br>
 
 <audio controls>
   <source src="av/Eagle_Pass_NC_06052024_1.mp3" type="audio/mpeg">
@@ -580,7 +579,6 @@ df_clip_3 |>
 
 ```
 
-<br>
 
 <audio controls>
   <source src="av/Azle_HL_06252024_1.mp3" type="audio/mpeg">
@@ -649,7 +647,6 @@ df_clip_4 |>
 
 ```
 
-<br>
 
 <audio controls>
   <source src="av/Donna_AR_07192024_1.mp3" type="audio/mpeg">
@@ -685,7 +682,6 @@ df_clip_5 |>
 
 ```
 
-<br>
 
 <audio controls>
   <source src="av/Beaumont_MM_06252024_1.mp3" type="audio/mpeg">
