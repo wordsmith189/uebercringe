@@ -517,7 +517,6 @@ df |>
 
 **Clip 2 | Response subtypes: Yes**
 
-<br>
 
 ```{r}
 
@@ -542,7 +541,7 @@ df_clip_2 |>
 
 ```
 
-
+<br>
 
 <audio controls>
   <source src="av/Eagle_Pass_NC_06052024_1.mp3" type="audio/mpeg">
