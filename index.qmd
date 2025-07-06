@@ -176,10 +176,15 @@ Decentralized community-embedded fieldwork
 
 ## H2TX 2024 interviews
 
-<br><br>
+:::{.fragment}
+<br>Age constraints
+<br>
+:::
 
 ::::{.columns}
 :::{.column}
+:::{.fragment}
+Rurality
 
 ```{r}
 df |> 
@@ -190,8 +195,13 @@ df |>
 
 ```
 :::
+:::
 
 :::{.column}
+:::{.fragment}
+
+Racioethnic composition
+
 ```{r}
 df |> 
   count(race, sort = T) |> 
@@ -208,6 +218,7 @@ df |>
     locations = cells_column_labels()
   ) 
 ```
+:::
 :::
 ::::
 
