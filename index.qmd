@@ -102,11 +102,6 @@ observer's paradox
 :::
 
 :::{.fragment}
-phatic communion
-  : Create "ties of union" through the "exchange of words" (Malinowski 1923)
-:::
-
-:::{.fragment}
 danger-of-death (DoD) question 
   : An interviewing tool used to elicit natural, casual speech from participants (Labov 1972 a, b).
 :::
@@ -126,6 +121,24 @@ danger-of-death (DoD) question
 :::{.callout-tip appearance="simple"}
 In designing slx interview questions for the 21st century, we should move away from a concern with observer's paradox and toward **phaticity**.
 :::
+:::
+
+## {.smaller}
+### Some concepts
+
+sociolinguistic interview 
+  : Key data elicitation method in dialectology and sociolinguistics
+
+observer's paradox 
+  : The challenge of studying natural speech patterns when the very act of observing alters the way people speak (Labov 1972 a, b).
+
+danger-of-death (DoD) question 
+  : An interviewing tool used to elicit natural, casual speech from participants (Labov 1972 a, b).
+
+
+:::{.fragment}
+phatic communion
+  : Create "ties of union" through the "exchange of words" (Malinowski 1923)
 :::
 
 ## {.smaller}
