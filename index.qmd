@@ -64,7 +64,7 @@ getwd()
 ```{r}
 p_load(gt)
 
-df_clip_1 <-  import('/Users/LH9896/Library/CloudStorage/Box-Box/_TELL/Projects/TELL & H2TX/H2TX teaching/interview session 06-2025/Language_DelRio_DC_07022024_1.xlsx') |> 
+df_clip_1 <-  import('/Users/LH9896/Library/CloudStorage/Box-Box/_TELL/Projects/TELL & H2TX/UEBER CRINGE 2025/CRINGE_analysis/av/DelRio_DC_07022024_1.xlsx') |> 
   filter(!is.na(Speaker)) 
 
 df_clip_1 |> 
@@ -84,7 +84,7 @@ df_clip_1 |>
 :::
 
 <audio controls>
-  <source src="av/Language_DelRio_DC_07022024_1.mp3" type="audio/mpeg">
+  <source src="av/DelRio_DC_07022024_1.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
 
@@ -501,7 +501,8 @@ df |>
 
 
 ## {.smaller}
-### Clip 2 | Response subtypes: Yes
+
+**Clip 2 | Response subtypes: Yes**
 
 <br>
 
@@ -538,7 +539,8 @@ df_clip_2 |>
 
 
 ## {.smaller}
-### Clip 3 | Response subtypes: Yes
+
+**Clip 3 | Response subtypes: Yes**
 
 <br>
 
@@ -607,7 +609,8 @@ df |>
 
 
 ## {.smaller}
-### Clip 4 | Response subtypes: No
+
+**Clip 4 | Response subtypes: No**
 
 <br>
 
@@ -642,7 +645,8 @@ df_clip_4 |>
 </audio>
 
 ## {.smaller}
-### Clip 5 | Response subtypes: No
+
+**Clip 5 | Response subtypes: No**
 
 <br>
 
