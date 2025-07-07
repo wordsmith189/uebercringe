@@ -229,7 +229,8 @@ df |>
 
 <br>
 
-**A** - The community: strengths, weaknesses, and change <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(open-ended)
+**A** - The community: strengths, weaknesses, and change 
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;("place talk"; Schegloff 1972, Zhao & Lou 2025) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(open-ended)
 
 **B** - Multilingualism: personal background and attitudes <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(survey questions and Likert scale responses)
 
@@ -709,7 +710,7 @@ Does cultural conservatism predict a stronger rejection of the question?
 
 :::{.fragment}
 CRINGE
-  : A pop-culturally grounded concept.</br></br>
+  : A pop-culturally grounded concept. <br>Only for the young?</br></br>
 :::
 
 :::{.fragment}
@@ -862,13 +863,13 @@ df |>
 ::::
 
 
-# Conclusions {background-image="img/cowboys2.png"} 
+# Conclusions {background-image="img/cowboys2.png"}
 
 ## Conclusions
 
 :::{.incremental}
 1. CT elicitation was found to be mostly at odds with its designated purpose in the slx interview.
-1. Factors like familiarity, general openness, and interviewer persona seemed more effective.
+1. Factors like familiarity, general openness, and interviewer persona seemed more important.
 1. New HT: orientations toward conservatism, as proxies for openness, may predict the success of the CT question in the slx interview.
 :::
 
