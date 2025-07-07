@@ -37,8 +37,9 @@ p_load(rio, tidyverse, janitor, scales, forcats, viridis, RColorBrewer, gt)
 ```{r load-data, include=FALSE}
 df <- import("data_merged.xlsx")
 
-getwd()
 ```
+
+# Introduction {background-image="img/river.png"}
 
 ## {.smaller}
 ### CRINGE as a phatic device
@@ -99,7 +100,7 @@ df_clip_1 |>
 </audio>
 
 ## {.smaller}
-### Some concepts
+### Some concepts & definitions
 
 :::{.fragment}
 sociolinguistic interview 
@@ -134,7 +135,7 @@ In designing slx interview questions for the 21st century, we should move away f
 :::
 
 ## {.smaller}
-### Some concepts
+### Some concepts & definitions
 
 sociolinguistic interview 
   : Key data elicitation method in dialectology and sociolinguistics
@@ -255,6 +256,8 @@ df |>
 - If "no", was an explanation provided? 
 :::
 
+# Findings {background-image="img/road.png"}
+
 ## 
 
 :::: {.container .incremental layout-ncol="2"}
@@ -313,13 +316,12 @@ p1
 
 df_summary <- df |>
   filter(!response == "na") |>
-  count(gender, response) |> # Count combinations of gender and response
-  group_by(gender) |>       # Calculate percentages within each gender group
+  count(gender, response) |> 
+  group_by(gender) |>  
   mutate(pct = n / sum(n)) |>
   ungroup() |> 
   mutate(response = factor(response, levels = c("no", "yes")))
 
-# 2. Now, create the plot using this summary data
 ggplot(df_summary, aes(x = gender, y = n, fill = response)) +
 
   geom_col(position = "fill",
@@ -327,7 +329,6 @@ ggplot(df_summary, aes(x = gender, y = n, fill = response)) +
            width = .6,
            show.legend = F) +
            
-  # --- ADD AND CUSTOMIZE THE PERCENTAGE LABELS ---
   geom_text(
     # Use the pre-calculated percentage 'pct' for the label
     aes(label = percent(pct, accuracy = 1)),
@@ -508,7 +509,11 @@ df |>
     style = cell_text(weight = "bold",
                       size = px(24)),
     locations = cells_column_labels()
-  ) 
+  ) |>
+  tab_options(
+    # table.width = pct(85),
+    table.margin.left = px(2)
+  )
 
 ```
 
@@ -751,6 +756,11 @@ plot_data <- df_political |>
          )
          )
 
+my_n <- df_political |>
+  filter(!is.na(political_leaning), political_leaning != "NA", 
+         political_leaning!="") |> 
+  nrow()
+
 ggplot(plot_data, aes(x = political_leaning, y = n, fill = political_leaning)) +
   # Create the bars
   geom_col(show.legend = FALSE,
@@ -770,13 +780,15 @@ ggplot(plot_data, aes(x = political_leaning, y = n, fill = political_leaning)) +
   labs(
     title = "Frequency of Political Leaning",
     x = NULL, 
-    y = NULL  
+    y = NULL,
+    caption = bquote(italic('N') ~ "=" ~ .(my_n))
   ) +
   theme_classic(base_size = 25, base_family = "Georgia") +
   theme(
     axis.text.x = element_blank(),
-    axis.ticks.x = element_blank()
+    axis.ticks.x = element_blank(),
     #axis.line.x = element_blank() 
+    plot.caption = element_text(size = 16)
   )
 ```
 
@@ -791,19 +803,25 @@ ggplot(plot_data, aes(x = political_leaning, y = n, fill = political_leaning)) +
 #| out-width: "95%"
 #| fig-align: "center"
 
-df |> 
+df_summary <- df |> 
   filter(response != "na") |> 
-  filter(political_leaning %in% c("conservative", "progressive")) |> 
+  filter(political_leaning %in% c("conservative", "progressive")) 
+
+my_n <- nrow(df_summary)
+
+df_summary |> 
   ggplot(aes(x = response)) +
   geom_bar(aes(y = after_stat(prop), group = 1), width = .5) +
   scale_y_continuous(labels = scales::percent) +
   facet_wrap(~political_leaning) +
-  labs(x = NULL, y = NULL) + 
+  labs(x = NULL, y = NULL,
+       caption = bquote(italic('N') ~ "=" ~ .(my_n))) + 
   theme_classic(base_size = 25, base_family = "Georgia") +
   theme(
     axis.text.x = element_text(angle = 17, vjust = .7),
-    axis.ticks.x = element_blank()
-    #axis.line.x = element_blank()  
+    axis.ticks.x = element_blank(),
+    #axis.line.x = element_blank() 
+    plot.caption = element_text(size = 16)
   )
 ```
 :::
@@ -817,19 +835,25 @@ df |>
 #| out-width: "95%"
 #| fig-align: "center"
 
-df |> 
+df_summary <- df |> 
   filter(response == "yes") |> 
-  filter(political_leaning %in% c("conservative", "progressive")) |> 
+  filter(political_leaning %in% c("conservative", "progressive"))
+
+my_n <- nrow(df_summary)
+
+df_summary |> 
   ggplot(aes(x = explanation_type)) +
   geom_bar(aes(y = after_stat(prop), group = 1), width = .5) +
   scale_y_continuous(labels = scales::percent) +
   facet_wrap(~political_leaning) +
-  labs(x = NULL, y = NULL) + 
+  labs(x = NULL, y = NULL,
+       caption = bquote(italic('N') ~ "=" ~ .(my_n))) + 
   theme_classic(base_size = 25, base_family = "Georgia") +
   theme(
     axis.text.x = element_text(angle = 17, vjust = .7),
-    axis.ticks.x = element_blank()
-    #axis.line.x = element_blank()  
+    axis.ticks.x = element_blank(),
+    #axis.line.x = element_blank() 
+    plot.caption = element_text(size = 16)
   )
 ```
 :::
@@ -843,19 +867,23 @@ df |>
 #| out-width: "95%"
 #| fig-align: "center"
 
-df |> 
+df_summary <- df |> 
   filter(response == "no") |> 
-  filter(political_leaning %in% c("conservative", "progressive")) |> 
+  filter(political_leaning %in% c("conservative", "progressive"))
+my_n <- nrow(df_summary)
+df_summary |> 
   ggplot(aes(x = explanation_type)) +
   geom_bar(aes(y = after_stat(prop), group = 1), width = .5) +
   scale_y_continuous(labels = scales::percent) +
   facet_wrap(~political_leaning) +
-  labs(x = NULL, y = NULL) + 
+  labs(x = NULL, y = NULL,
+       caption = bquote(italic('N') ~ "=" ~ .(my_n))) + 
   theme_classic(base_size = 18, base_family = "Georgia") +
   theme(
     axis.text.x = element_text(angle = 15, vjust = .7),
-    axis.ticks.x = element_blank()
-    #axis.line.x = element_blank()  
+    axis.ticks.x = element_blank(),
+    #axis.line.x = element_blank() 
+    plot.caption = element_text(size = 16)
   )
 ```
 :::
@@ -892,4 +920,58 @@ Thank you for your attention.
 <br>www: https://larshinrichs.site 
 
 
+##
+
+```{r}
+#| fig.cap = "Political Leaning by Rurality"
+
+my_custom_colors2 <- c("#F08080", "#ADD8E6")
+
+df |> 
+  filter(political_leaning %in% c("conservative", "progressive")) |> 
+  count(rural_urban, political_leaning) |> 
+  group_by(rural_urban) |>
+  mutate(pct = n / sum(n)) |>
+  ungroup() |> 
+  
+  ggplot(aes(x = rural_urban, y = n, 
+             fill = political_leaning)) +
+
+  geom_col(position = "fill",
+           color = "black", 
+           width = .6,
+           show.legend = T) +
+           
+  geom_text(
+    aes(label = percent(pct, accuracy = 1)),
+    position = position_fill(vjust = 0.5),
+    size = 9, 
+    color = "white",
+    fontface = "bold",
+    family = "Georgia"
+  ) +
+
+  scale_y_continuous(labels = percent) +
+  scale_fill_manual(values = my_custom_colors2) +
+  labs(y = NULL, x = NULL, caption = bquote(italic('N') ~ "= 31")) +
+  #coord_flip() +
+  
+  theme_classic(base_size = 25, base_family = "Georgia") +
+  
+  theme(
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size = 20),
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    # Control size of the percentage axis labels "0%", "50%", etc.
+    # axis.text.x = element_text(size = 20),
+    # Control the legend title size
+    # legend.title = element_text(size = 22),
+    # Control the legend item ("yes", "no") size
+    # legend.text = element_text(size = 20),
+    legend.title = element_blank(),
+    legend.position = "left",
+    plot.caption = element_text(size = 16)
+  )
+```
 
