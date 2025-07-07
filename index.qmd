@@ -39,13 +39,17 @@ df <- import("data_merged.xlsx")
 
 ```
 
+##
+
+**handout: <br>https://bit.ly/cringe-lh-handout**
+
 # Introduction {background-image="img/river.png"}
 
 ## {.smaller}
 ### CRINGE as a phatic device
 
 :::{.incremental}
-- The humor inherent in CT makes speakers volunteer these topics precisely for phaticity's sake (Jefferson 1984).
+- The humor inherent in CRINGE talk (CT) makes speakers volunteer these topics precisely for phaticity's sake (Jefferson 1984).
 - Speakers seek the relief of sharing cringey experiences in conversation online and f2f (Rimé 2009).
 - Embrace of awkwardness can engender authenticity (Haen 2018, Lotfy 2024).
 :::
